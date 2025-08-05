@@ -1,0 +1,7 @@
+{
+  "help": {
+    "title": "Help & Useful Links",
+    "description": "Need assistance or want to manage the bot? Use the buttons below to visit the dashboard, invite the bot to your server, or join the support community.",
+    "footer": "Command: /help"
+  }
+}
