@@ -4,7 +4,7 @@ const config = require("../../config");
 
 if (!getApps().length) {
   initializeApp({
-    credential: cert(config.firebaseAdmin) 
+    credential: cert(config.private.firebase.adminKey), 
   });
 }
 

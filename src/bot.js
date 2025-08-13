@@ -14,6 +14,10 @@ const client = new Client({
 
 client.cluster = new ClusterClient(client);
 
+(async () => {
+  await log.initSession(); // ÚNICA chamada no início
+})();
+
 client.once("ready", async () => {
   log.setClient(client);
   await require("./handlers/evnts")(client);
