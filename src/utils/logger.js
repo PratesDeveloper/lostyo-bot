@@ -1,6 +1,7 @@
 const C = require("colors");
 const { private: priv, embedColor, embedColorError } = require("../../config");
 const { EmbedBuilder } = require("discord.js");
+const { db } = require("../firebase"); // Firestore
 
 let client = null;
 const queue = [];
@@ -12,6 +13,34 @@ const colors = {
   green: "#00cc66",
   cyan: "#3399ff",
 };
+
+// Firestore refs dinâmicos
+const LOG_COLLECTION = "Bot";
+const LOGS_ROOT = "Logs";
+let sessionDocRef = null;
+
+// Cria uma sessão nova a cada startup
+async function initLogs() {
+  try {
+    const now = new Date();
+    const sessionId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}_${String(now.getHours()).padStart(2, "0")}-${String(now.getMinutes()).padStart(2, "0")}-${String(now.getSeconds()).padStart(2, "0")}`;
+
+    sessionDocRef = db
+      .collection(LOG_COLLECTION)
+      .doc(LOGS_ROOT)
+      .collection(sessionId) // subcoleção da sessão
+      .doc("data");
+
+    await sessionDocRef.set({
+      startedAt: now,
+      entries: [],
+    });
+
+    console.log(C.green(`Firestore log session started: ${LOG_COLLECTION}/${LOGS_ROOT}/${sessionId}`));
+  } catch (err) {
+    console.error("Logger: failed to init Firestore log session", err);
+  }
+}
 
 const setClient = c => {
   client = c;
@@ -34,13 +63,29 @@ const sendToChannel = async ({ time, level, raw }) => {
     const embed = new EmbedBuilder()
       .setColor(colors[level] || embedColor)
       .setDescription(`${raw}`)
-      .setTimestamp()
+      .setTimestamp();
 
     await ch.send({ embeds: [embed] });
   } catch (err) {
     console.error("Logger: failed to send to channel", err);
   }
 };
+
+async function sendToFirestore({ time, level, raw, caller }) {
+  try {
+    if (!sessionDocRef) await initLogs();
+    await sessionDocRef.update({
+      entries: db.FieldValue.arrayUnion({
+        time,
+        level,
+        message: raw,
+        file: caller,
+      }),
+    });
+  } catch (err) {
+    console.error("Logger: failed to write to Firestore", err);
+  }
+}
 
 function getCallerFile() {
   const originalPrepareStackTrace = Error.prepareStackTrace;
@@ -51,7 +96,6 @@ function getCallerFile() {
     Error.prepareStackTrace = originalPrepareStackTrace;
     const caller = stack[3];
     if (!caller) return "unknown";
-
     const fileName = caller.getFileName();
     return fileName ? fileName.split(/[\\/]/).pop() : "unknown";
   } catch {
@@ -72,6 +116,7 @@ const log = async (raw, colorFn, level = "log") => {
   }
 
   await sendToChannel({ time, level, raw });
+  await sendToFirestore({ time, level, raw, caller: callerFile });
 };
 
 const clear = () => {
@@ -84,6 +129,7 @@ const clear = () => {
 module.exports = {
   setClient,
   clear,
+  initLogs,
   info: m => log(m, C.gray, "gray"),
   warn: m => log(m, C.yellow, "yellow"),
   error: m => log(m, C.red, "red"),

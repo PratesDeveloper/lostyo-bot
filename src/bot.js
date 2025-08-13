@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits, Partials } = require("discord.js");
 const { ClusterClient, getInfo } = require("discord-hybrid-sharding");
 const { private: priv } = require("../config");
+const clientApi = require("./utils/clientApi");
 const log = require("./utils/logger");
 
 const client = new Client({
@@ -17,6 +18,8 @@ client.once("ready", async () => {
   log.setClient(client);
   await require("./handlers/evnts")(client);
   await require("./handlers/cmds")(client);
+  clientApi.setClient(client); 
+  clientApi.watchConfig(); 
 });
 
 

@@ -22,6 +22,7 @@ const privateConfig = {
   underDevelopment: false,
   logWebhook: process.env.WEBHOOK_URL,
   apiKey: process.env.API_KEY,
+  firebaseAdmin: "./assets/firebase-admin.json",
 };
 
 module.exports = {
