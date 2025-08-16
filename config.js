@@ -28,6 +28,22 @@ const privateConfig = {
   botToken: process.env.TOKEN_BOT,
   deploySlashOnReady: true,
   underDevelopment: false,
+  changeClientConfig: false,
+  botRoleCustomization: true,
+  useShards: true,
+  clustersMode: true,
+  translator: true,
+  idiomes: {
+    en: "en",
+    es: "es",
+    fr: "fr",
+    de: "de",
+    it: "it",
+    pt: "pt",
+    ru: "ru",
+    zh: "zh"
+  },
+
 
   // DATABASE
   databaseUrl: process.env.DATABASE_URL,

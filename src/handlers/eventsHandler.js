@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { public: pub } = require("../../config");
-const log = require("../utils/logger");
+const log = require("../services/logger");
 
 module.exports = async (client) => {
   let count = 0;
@@ -51,7 +51,7 @@ module.exports = async (client) => {
     }
   };
 
-  load(path.join(__dirname, "../files/events"));
+  load(path.join(__dirname, "../events"));
 
   log.success(`${count} Events OK!\n`);
 };

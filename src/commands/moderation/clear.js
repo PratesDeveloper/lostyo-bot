@@ -63,7 +63,7 @@ module.exports = {
       return interaction.reply({
         embeds: [
           new EmbedBuilder()
-            .setColor(pub.embedColorError)
+            .setColor(pub.embed.errorColor)
             .setTitle("Permission Denied")
             .setDescription("**You lack permission to delete messages in the selected channel.**")
         ],
@@ -80,7 +80,7 @@ module.exports = {
     if (timeframeKey) fields.push({ name: "Timeframe", value: `**${TIMEFRAMES[timeframeKey].label}**`, inline: true });
 
     const confirmEmbed = new EmbedBuilder()
-      .setColor(pub.embedColor)
+      .setColor(pub.embed.Color)
       .setTitle("🗑️ Confirm Deletion")
       .setDescription("Please confirm the following clear operation:")
       .addFields(fields)

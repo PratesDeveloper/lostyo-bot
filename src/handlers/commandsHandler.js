@@ -1,7 +1,7 @@
 const fs = require("fs"), path = require("path");
 const { REST, Routes } = require("discord.js");
 const { private: priv, public: pub } = require("../../config");
-const log = require("../utils/logger");
+const log = require("../services/logger");
 
 module.exports = async (client) => {
   client.commands = new Map();
@@ -30,7 +30,7 @@ module.exports = async (client) => {
     }
   };
 
-  loadCommands(path.join(__dirname, "../files/commands"));
+  loadCommands(path.join(__dirname, "../commands"));
 
   if (!priv.deploySlashOnReady) return;
   if (!client.user || !client.token) return log.error("Client not ready for slash deploy");

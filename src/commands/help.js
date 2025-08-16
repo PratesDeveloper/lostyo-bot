@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const idiome = require("../services/idiome")
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -8,10 +9,12 @@ module.exports = {
   async execute(interaction) {
     const pub = module.exports.config;
 
+    const description = await idiome.translate("if you need assistance, use the buttons below to access the dashboard, invite the bot, or join the support server.", interaction);
+
     const embed = new EmbedBuilder()
-      .setColor(pub.embedColor)
+      .setColor(pub.embed.color)
       .setTitle("Help & Links")
-      .setDescription("if you need assistance, use the buttons below to access the dashboard, invite the bot, or join the support server.")
+      .setDescription(description)
       .setFooter({
         text: `/help`,
         iconURL: "https://cdn.discordapp.com/emojis/1402078915580924046.webp?size=32&quality=lossless"
