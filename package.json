@@ -9,8 +9,10 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@discordjs/rest": "^2.5.1",
     "@vitalets/google-translate-api": "^9.2.1",
     "colors": "^1.4.0",
+    "discord-api-types": "^0.38.20",
     "discord-hybrid-sharding": "^2.2.6",
     "discord.js": "^14.21.0",
     "dotenv": "^17.2.1",
